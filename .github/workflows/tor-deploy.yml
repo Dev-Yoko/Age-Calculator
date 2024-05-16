@@ -41,11 +41,15 @@ jobs:
         id: onion_address
         run: echo "::set-output name=onion_address::$(sudo cat /var/lib/tor/hidden_service/hostname)"
         
+      - name: Set Onion Address Environment Variable
+        id: set_onion_address
+        run: echo "::set-env name=ONION_ADDRESS::$(sudo cat /var/lib/tor/hidden_service/hostname)"
+        
       - name: Output Onion Address
-        run: echo "Onion Address: ${{ steps.onion_address.outputs.onion_address }}"
+        run: echo "::set-output name=onion_address::$(sudo cat /var/lib/tor/hidden_service/hostname)"
         
       - name: Test Onion Site
-        run: curl --retry 5 --retry-delay 10 -sSf "${{ steps.onion_address.outputs.onion_address }}" || exit 1
+        run: curl --retry 5 --retry-delay 10 -sSf "${{ env.ONION_ADDRESS }}" || exit 1
       
       - name: Deploy to Staging CDN
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
