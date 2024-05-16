@@ -65,10 +65,6 @@ jobs:
           name: production-site
           path: /var/lib/tor/hidden_service
         
-      - name: Notify Deployment
-        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: echo "Tor Onion Site deployed successfully to Staging and Production! Onion Address: ${{ steps.onion_address.outputs.onion_address }}"
-      
       - name: Rollback on Failure
         if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: echo "Rolling back deployment..."
