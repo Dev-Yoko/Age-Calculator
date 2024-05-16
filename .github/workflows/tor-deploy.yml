@@ -28,6 +28,7 @@ jobs:
         run: |
           echo "HiddenServiceDir /var/lib/tor/hidden_service" | sudo tee /etc/tor/torrc
           echo "HiddenServicePort 80 8080" | sudo tee -a /etc/tor/torrc
+          sudo mkdir -p /var/lib/tor/hidden_service
           sudo chown -R debian-tor:debian-tor /var/lib/tor/hidden_service
           sudo chmod 700 /var/lib/tor/hidden_service
         
