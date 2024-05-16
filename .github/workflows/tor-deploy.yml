@@ -43,8 +43,7 @@ jobs:
         run: echo "::set-output name=onion_address::$(sudo cat /var/lib/tor/hidden_service/hostname)"
         
       - name: Set Onion Address Environment Variable
-        id: set_onion_address
-        run: echo "::set-env name=ONION_ADDRESS::$(sudo cat /var/lib/tor/hidden_service/hostname)"
+        run: echo "ONION_ADDRESS=$(sudo cat /var/lib/tor/hidden_service/hostname)" >> $GITHUB_ENV
         
       - name: Output Onion Address
         run: echo "::set-output name=onion_address::$(sudo cat /var/lib/tor/hidden_service/hostname)"
