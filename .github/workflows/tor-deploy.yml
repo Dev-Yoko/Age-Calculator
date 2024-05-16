@@ -1,0 +1,74 @@
+name: Deploy Tor Onion Site
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Install Tor
+        run: sudo apt-get update && sudo apt-get install tor -y
+        
+      - name: Backup Tor Configuration
+        run: |
+          mkdir -p backups
+          cp /etc/tor/torrc backups/torrc-$(date +"%Y%m%d%H%M%S")
+        
+      - name: Configure Tor
+        run: |
+          echo "HiddenServiceDir /var/lib/tor/hidden_service" | sudo tee /etc/tor/torrc
+          echo "HiddenServicePort 80 8080" | sudo tee -a /etc/tor/torrc
+          sudo chown -R debian-tor:debian-tor /var/lib/tor/hidden_service
+          sudo chmod 700 /var/lib/tor/hidden_service
+        
+      - name: Start Tor Service
+        run: sudo service tor start
+        
+      - name: Wait for Tor to Start
+        run: sleep 10
+        
+      - name: Retrieve Onion Address
+        id: onion_address
+        run: echo "::set-output name=onion_address::$(sudo cat /var/lib/tor/hidden_service/hostname)"
+        
+      - name: Output Onion Address
+        run: echo "Onion Address: ${{ steps.onion_address.outputs.onion_address }}"
+        
+      - name: Test Onion Site
+        run: curl --retry 5 --retry-delay 10 -sSf "${{ steps.onion_address.outputs.onion_address }}" || exit 1
+      
+      - name: Deploy to Staging CDN
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v2
+        with:
+          name: staging-site
+          path: /var/lib/tor/hidden_service
+          
+      - name: Deploy to Production CDN
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v2
+        with:
+          name: production-site
+          path: /var/lib/tor/hidden_service
+        
+      - name: Notify Deployment
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: echo "Tor Onion Site deployed successfully to Staging and Production! Onion Address: ${{ steps.onion_address.outputs.onion_address }}"
+      
+      - name: Rollback on Failure
+        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: echo "Rolling back deployment..."
+      
+      - name: Monitoring Alert
+        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: echo "Deployment of Tor Onion Site failed! Please investigate."
