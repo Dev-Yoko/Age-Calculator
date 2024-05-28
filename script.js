@@ -14,6 +14,13 @@ document.getElementById('age-form').addEventListener('submit', function(event) {
     return;
   }
 
+  var currentYear = new Date().getFullYear();
+  if (birthYear > currentYear) {
+    hideLoadingMessage();
+    alert("Birth year cannot be in the future.");
+    return;
+  }
+
   var birthDate = new Date(birthYear, birthMonth - 1, birthDay);
   var currentDate = new Date();
 
@@ -28,13 +35,13 @@ document.getElementById('age-form').addEventListener('submit', function(event) {
 
 function showLoadingMessage() {
   var loadingModal = document.createElement("div");
-  loadingModal.id = "loading-modal";
+  loadingModal.classList.add("loading-modal");
   loadingModal.innerHTML = '<div class="loading-message">Calculating Your Age. Please Wait...</div>';
   document.body.appendChild(loadingModal);
 }
 
 function hideLoadingMessage() {
-  var loadingModal = document.getElementById("loading-modal");
+  var loadingModal = document.querySelector(".loading-modal");
   if (loadingModal) {
     document.body.removeChild(loadingModal);
   }
