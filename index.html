@@ -5,35 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Age Calculator</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta name="description" content="Calculate your age quickly and accurately with our Age Calculator.">
+  <meta name="keywords" content="age calculator, date of birth, calculate age">
+  <meta name="author" content="Dev-Yoko">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Age Calculator">
+  <meta property="og:description" content="Calculate your age quickly and accurately with our Age Calculator.">
+  <meta property="og:image" content="https://telegra.ph/file/23cd0860a801f9703d0bb.jpg">
+  <meta property="og:url" content="https://github.com/Dev-Yoko/Age-Calculator">
+  <meta property="og:type" content="website">
 </head>
 <body>
   <header>
-    <div class="heading-box">
+    <div class="heading-box" role="banner">
       <h1>Age Calculator</h1>
     </div>
   </header>
 
   <main>
-    <form id="age-form">
-      <label for="birth-year">Year (e.g. 1990):</label>
-      <input type="number" id="birth-year" placeholder="Enter your birth year..." min="1900" max="2024" required>
-      
-      <label for="birth-month">Month (e.g. 01 for January):</label>
-      <input type="number" id="birth-month" placeholder="Enter your birth month..." min="1" max="12" required>
-      
-      <label for="birth-day">Day (e.g. 15):</label>
-      <input type="number" id="birth-day" placeholder="Enter your birth day..." min="1" max="31" required>
-      
-      <button type="submit">Calculate Age</button>
+    <form id="age-form" aria-labelledby="form-title">
+      <fieldset>
+        <legend id="form-title">Enter your birth date</legend>
+
+        <label for="birth-year">Year (e.g. 1990):</label>
+        <input type="number" id="birth-year" name="birth-year" placeholder="Enter your birth year..." min="1900" max="2024" required aria-required="true" aria-describedby="year-help">
+        <span id="year-help" class="visually-hidden">Please enter a valid year between 1900 and 2024.</span>
+        
+        <label for="birth-month">Month (e.g. 01 for January):</label>
+        <input type="number" id="birth-month" name="birth-month" placeholder="Enter your birth month..." min="1" max="12" required aria-required="true" aria-describedby="month-help">
+        <span id="month-help" class="visually-hidden">Please enter a valid month between 1 and 12.</span>
+        
+        <label for="birth-day">Day (e.g. 15):</label>
+        <input type="number" id="birth-day" name="birth-day" placeholder="Enter your birth day..." min="1" max="31" required aria-required="true" aria-describedby="day-help">
+        <span id="day-help" class="visually-hidden">Please enter a valid day between 1 and 31.</span>
+        
+        <button type="submit">Calculate Age</button>
+      </fieldset>
     </form>
 
-    <div id="result"></div>
+    <div id="result" role="status" aria-live="polite"></div>
   </main>
 
   <footer>
     <p>&copy; 2024 Age Calculator. All Rights Reserved.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
-</html>
+  </html>
